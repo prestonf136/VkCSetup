@@ -3,6 +3,43 @@
 #include <stdlib.h>
 #include <string.h>
 
+static VKAPI_ATTR VkBool32 VKAPI_CALL
+DefaultCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                VkDebugUtilsMessageTypeFlagsEXT messageType,
+                const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+                void *pUserData) {
+  if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+    fprintf(stderr, "Validation layer: %s\n", pCallbackData->pMessage);
+  }
+  return VK_FALSE;
+}
+
+VkResult CreateDebugUtilsMessengerEXT(
+    VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
+    const VkAllocationCallbacks *pAllocator,
+    VkDebugUtilsMessengerEXT *pDebugMessenger) {
+  PFN_vkCreateDebugUtilsMessengerEXT func =
+      (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+          instance, "vkCreateDebugUtilsMessengerEXT");
+  if (func != NULL) {
+    return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+  } else {
+    return VK_ERROR_EXTENSION_NOT_PRESENT;
+  }
+}
+
+void DestroyDebugUtilsMessengerEXT(VkInstance instance,
+                                   VkDebugUtilsMessengerEXT debugMessenger,
+                                   const VkAllocationCallbacks *pAllocator) {
+  PFN_vkDestroyDebugUtilsMessengerEXT func =
+      (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+          instance, "vkDestroyDebugUtilsMessengerEXT");
+  if (func != NULL) {
+    func(instance, debugMessenger, pAllocator);
+  }
+}
+
+/// function to create a vulkan instance
 InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
   InstanceBuilderReturn IBR;
 
@@ -35,6 +72,25 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
       LOG("[VkC Error]: if Builder.EnableDebugMessager is set to true "
           "Builder.LayerNames must contain VK_LAYER_KHRONOS_validation!\n");
     }
+
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = {};
+    debugCreateInfo.sType =
+        VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    debugCreateInfo.messageSeverity =
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    debugCreateInfo.messageType =
+        VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    if (Builder->DebugCallback != NULL) {
+      debugCreateInfo.pfnUserCallback = Builder->DebugCallback;
+    } else {
+      debugCreateInfo.pfnUserCallback = DefaultCallback;
+    }
+    InstanceCreateInfo.pNext =
+        (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
   }
 
   if (Builder->EnableDebugMessager) {
@@ -110,10 +166,35 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
     free(layers);
   }
 
+  VkDebugUtilsMessengerEXT debugMessenger;
+
+  VkDebugUtilsMessengerCreateInfoEXT DebugMessangerCreateInfo = {};
+  DebugMessangerCreateInfo.sType =
+      VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+  DebugMessangerCreateInfo.messageSeverity =
+      VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+      VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+      VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+  DebugMessangerCreateInfo.messageType =
+      VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+      VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+      VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+  if (Builder->DebugCallback != NULL) {
+    DebugMessangerCreateInfo.pfnUserCallback = Builder->DebugCallback;
+  } else {
+    DebugMessangerCreateInfo.pfnUserCallback = DefaultCallback;
+  }
+  DebugMessangerCreateInfo.pUserData = NULL;
+
   VkResult Result = vkCreateInstance(&InstanceCreateInfo, NULL, &IBR.Instance);
   if (Result != VK_SUCCESS) {
     LOG("[VkC Error]: Failed to create Vulkan Instance!\n");
   }
+
+  if (CreateDebugUtilsMessengerEXT(IBR.Instance, &DebugMessangerCreateInfo,
+                                   NULL, &debugMessenger) != VK_SUCCESS) {
+    LOG("[VkC Error]: Failed to create Debug Messenger");
+  };
 
   return IBR;
 };

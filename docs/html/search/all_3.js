@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['layercount_11',['LayerCount',['../structInstanceBuilder.html#ad960c3edcd284aedb8c88656a5822568',1,'InstanceBuilder']]],
-  ['layernames_12',['LayerNames',['../structInstanceBuilder.html#aa85c588f04e32943aa0f6629afdcd694',1,'InstanceBuilder']]]
+  ['instance_9',['Instance',['../structInstanceBuilderReturn.html#af934a400fa401b80d53b08b46dd090f6',1,'InstanceBuilderReturn']]],
+  ['instancebuilder_10',['InstanceBuilder',['../structInstanceBuilder.html',1,'']]],
+  ['instancebuilderreturn_11',['InstanceBuilderReturn',['../structInstanceBuilderReturn.html',1,'']]]
 ];

@@ -28,11 +28,18 @@ struct InstanceBuilder {
   const char *const
       *ExtentionNames; //!< contains the names of extentions to be used
 
-  bool EnableDebugMessager; /*!< whether or not to use the debug messager
-                               provided by VkCSetup, if enabled ExtentionNames
-                               must contain VK_EXT_DEBUG_UTILS_EXTENSION_NAME
-                               and LayerNames must contain
-                               VK_LAYER_KHRONOS_validation*/
+  VkBool32 (*DebugCallback)(
+      VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT,
+      const VkDebugUtilsMessengerCallbackDataEXT *,
+      void *); /*!< contains a debug callback function, when set to NULL
+                  VkCSetup will use its default Debug Messager */
+  bool EnableDebugMessager; /*!< whether or not to use the
+                            debug messager provided by
+                            VkCSetup, if enabled
+                            ExtentionNames must contain
+                            VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+                            and LayerNames must contain
+                            VK_LAYER_KHRONOS_validation*/
 } typedef InstanceBuilder;
 
 //! this struct holds the values returned by the VkC_BuildInstance function
@@ -40,11 +47,10 @@ struct InstanceBuilderReturn {
   VkInstance Instance; /*!< A vulkan Instance */
 } typedef InstanceBuilderReturn;
 
-//! function to create a vulkan instance
+/// function to create a vulkan instance
 InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder);
 
-/*! [NOT WORKING AS OF NOW] specifies the requirements a physical device should
-  meet to be selected*/
+/*! [NOT WORKING AS OF NOW] specifies the requirements a physical device should meet to be selected*/
 struct PhysicalDeviceBuilder {
   bool ShouldBeDedicated; //!< when set to true VkCSetup will only use physical
                           //!< devices with the

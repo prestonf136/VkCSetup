@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['layercount_27',['LayerCount',['../structInstanceBuilder.html#ad960c3edcd284aedb8c88656a5822568',1,'InstanceBuilder']]],
-  ['layernames_28',['LayerNames',['../structInstanceBuilder.html#aa85c588f04e32943aa0f6629afdcd694',1,'InstanceBuilder']]]
+  ['instance_35',['Instance',['../structInstanceBuilderReturn.html#af934a400fa401b80d53b08b46dd090f6',1,'InstanceBuilderReturn']]]
 ];

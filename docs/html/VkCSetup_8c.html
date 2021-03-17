@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VkCSetup: src/VkCSetup.c Source File</title>
+<title>VkCSetup: src/VkCSetup.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,16 +67,46 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">VkCSetup.c</div>  </div>
+<div class="title">VkCSetup.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="VkCSetup_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="VkCSetup_8h.html">VkCSetup.h</a>&quot;</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="VkCSetup_8h.html#a13e8021bea25c6ace3fb98bc04b8dbc3">    7</a></span>&#160;<a class="code" href="structInstanceBuilderReturn.html">InstanceBuilderReturn</a> <a class="code" href="VkCSetup_8c.html#a13e8021bea25c6ace3fb98bc04b8dbc3">VkC_BuildInstance</a>(<a class="code" href="structInstanceBuilder.html">InstanceBuilder</a> *Builder) {</div>
+<div class="textblock"><code>#include &quot;<a class="el" href="VkCSetup_8h_source.html">VkCSetup.h</a>&quot;</code><br />
+<code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div>
+<p><a href="VkCSetup_8c_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a13e8021bea25c6ace3fb98bc04b8dbc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structInstanceBuilderReturn.html">InstanceBuilderReturn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VkCSetup_8c.html#a13e8021bea25c6ace3fb98bc04b8dbc3">VkC_BuildInstance</a> (<a class="el" href="structInstanceBuilder.html">InstanceBuilder</a> *Builder)</td></tr>
+<tr class="memdesc:a13e8021bea25c6ace3fb98bc04b8dbc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">function to create a vulkan instance  <a href="VkCSetup_8c.html#a13e8021bea25c6ace3fb98bc04b8dbc3">More...</a><br /></td></tr>
+<tr class="separator:a13e8021bea25c6ace3fb98bc04b8dbc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a13e8021bea25c6ace3fb98bc04b8dbc3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13e8021bea25c6ace3fb98bc04b8dbc3">&#9670;&nbsp;</a></span>VkC_BuildInstance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structInstanceBuilderReturn.html">InstanceBuilderReturn</a> VkC_BuildInstance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structInstanceBuilder.html">InstanceBuilder</a> *&#160;</td>
+          <td class="paramname"><em>Builder</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>function to create a vulkan instance </p>
+
+<p class="definition">Definition at line <a class="el" href="VkCSetup_8c_source.html#l00007">7</a> of file <a class="el" href="VkCSetup_8c_source.html">VkCSetup.c</a>.</p>
+<div class="fragment"><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;                                                                  {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  <a class="code" href="structInstanceBuilderReturn.html">InstanceBuilderReturn</a> IBR;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;  VkApplicationInfo AppInfo = {};</div>
@@ -189,13 +219,10 @@ $(function() {
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  }</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="keywordflow">return</span> IBR;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;};</div>
-<div class="ttc" id="aVkCSetup_8c_html_a13e8021bea25c6ace3fb98bc04b8dbc3"><div class="ttname"><a href="VkCSetup_8c.html#a13e8021bea25c6ace3fb98bc04b8dbc3">VkC_BuildInstance</a></div><div class="ttdeci">InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder)</div><div class="ttdoc">function to create a vulkan instance</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8c_source.html#l00007">VkCSetup.c:7</a></div></div>
-<div class="ttc" id="aVkCSetup_8h_html"><div class="ttname"><a href="VkCSetup_8h.html">VkCSetup.h</a></div></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}</div>
 <div class="ttc" id="aVkCSetup_8h_html_af855c94dc540e943632089ce7496faac"><div class="ttname"><a href="VkCSetup_8h.html#af855c94dc540e943632089ce7496faac">LOG</a></div><div class="ttdeci">#define LOG(x)</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00012">VkCSetup.h:12</a></div></div>
 <div class="ttc" id="astructInstanceBuilderReturn_html"><div class="ttname"><a href="structInstanceBuilderReturn.html">InstanceBuilderReturn</a></div><div class="ttdoc">this struct holds the values returned by the VkC_BuildInstance function</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00046">VkCSetup.h:46</a></div></div>
 <div class="ttc" id="astructInstanceBuilderReturn_html_af934a400fa401b80d53b08b46dd090f6"><div class="ttname"><a href="structInstanceBuilderReturn.html#af934a400fa401b80d53b08b46dd090f6">InstanceBuilderReturn::Instance</a></div><div class="ttdeci">VkInstance Instance</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00047">VkCSetup.h:47</a></div></div>
-<div class="ttc" id="astructInstanceBuilder_html"><div class="ttname"><a href="structInstanceBuilder.html">InstanceBuilder</a></div><div class="ttdoc">this struct holds the parameters used by the VkC_BuildInstance function</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00016">VkCSetup.h:16</a></div></div>
 <div class="ttc" id="astructInstanceBuilder_html_a0535b269cdd824844b96ee5ac1785a22"><div class="ttname"><a href="structInstanceBuilder.html#a0535b269cdd824844b96ee5ac1785a22">InstanceBuilder::ExtentionNames</a></div><div class="ttdeci">const char *const  * ExtentionNames</div><div class="ttdoc">contains the names of extentions to be used</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00029">VkCSetup.h:29</a></div></div>
 <div class="ttc" id="astructInstanceBuilder_html_a0d9b1172f8abff26df88f440a45ca322"><div class="ttname"><a href="structInstanceBuilder.html#a0d9b1172f8abff26df88f440a45ca322">InstanceBuilder::AppVersion</a></div><div class="ttdeci">uint32_t AppVersion</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00018">VkCSetup.h:18</a></div></div>
 <div class="ttc" id="astructInstanceBuilder_html_a62b135116b522db558448be4ebc65f99"><div class="ttname"><a href="structInstanceBuilder.html#a62b135116b522db558448be4ebc65f99">InstanceBuilder::EngineVersion</a></div><div class="ttdeci">uint32_t EngineVersion</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00021">VkCSetup.h:21</a></div></div>
@@ -206,7 +233,10 @@ $(function() {
 <div class="ttc" id="astructInstanceBuilder_html_ad960c3edcd284aedb8c88656a5822568"><div class="ttname"><a href="structInstanceBuilder.html#ad960c3edcd284aedb8c88656a5822568">InstanceBuilder::LayerCount</a></div><div class="ttdeci">uint32_t LayerCount</div><div class="ttdoc">specifies the ammount of layers</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00025">VkCSetup.h:25</a></div></div>
 <div class="ttc" id="astructInstanceBuilder_html_ae96eedcb01ceeba14846cbb995715eb8"><div class="ttname"><a href="structInstanceBuilder.html#ae96eedcb01ceeba14846cbb995715eb8">InstanceBuilder::ExtentionCount</a></div><div class="ttdeci">uint32_t ExtentionCount</div><div class="ttdoc">contains the names of extentions to be used</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00027">VkCSetup.h:27</a></div></div>
 <div class="ttc" id="astructInstanceBuilder_html_aee994ed51b514aec5cb295c37764aaf9"><div class="ttname"><a href="structInstanceBuilder.html#aee994ed51b514aec5cb295c37764aaf9">InstanceBuilder::EngineName</a></div><div class="ttdeci">const char * EngineName</div><div class="ttdoc">specifies the name of the game engine</div><div class="ttdef"><b>Definition:</b> <a href="VkCSetup_8h_source.html#l00020">VkCSetup.h:20</a></div></div>
-</div><!-- fragment --></div><!-- contents -->
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2
