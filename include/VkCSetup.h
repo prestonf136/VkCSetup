@@ -2,6 +2,7 @@
 #define _VK_C_SETUP_
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vulkan/vulkan.h>
@@ -11,6 +12,12 @@
 #else
 #define LOG(x) ;
 #endif
+
+//! if valdiation layers are enabled you must destroy the
+//! VkDebugUtilsMessengerEXT yourself
+void VkCS_DestroyDebugUtilsMessengerEXT(
+    VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
+    const VkAllocationCallbacks *pAllocator);
 
 //! this struct holds the parameters used by the VkC_BuildInstance function
 struct InstanceBuilder {
@@ -44,17 +51,28 @@ struct InstanceBuilder {
 
 //! this struct holds the values returned by the VkC_BuildInstance function
 struct InstanceBuilderReturn {
-  VkInstance Instance; /*!< A vulkan Instance */
+  VkInstance Instance;                     /*!< A vulkan Instance */
+  VkDebugUtilsMessengerEXT DebugMessenger; //!< a debug messenger
 } typedef InstanceBuilderReturn;
 
-/// function to create a vulkan instance
 InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder);
 
-/*! [NOT WORKING AS OF NOW] specifies the requirements a physical device should meet to be selected*/
+/*! specifies the requirements a physical device should
+ * meet to be selected*/
 struct PhysicalDeviceBuilder {
-  bool ShouldBeDedicated; //!< when set to true VkCSetup will only use physical
-                          //!< devices with the
-                          //!< VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU flag
+  VkInstance *Instance;
+  bool (*isSuitableDevice)(
+      VkPhysicalDevice *); //! callback to check if GPU is suitable, if set to
+                           //! NULL VkCSetup will perfer a descrete gpu
 } typedef PhysicalDeviceBuilder;
+
+struct PhysicalDeviceBuilderReturn {
+  VkPhysicalDevice PhysicalDevice;
+  uint32_t GraphicsQueueIndex;
+  uint32_t PresentQueueIndex;
+} typedef PhysicalDeviceBuilderReturn;
+
+PhysicalDeviceBuilderReturn
+VkC_BuildPhysicalDevice(PhysicalDeviceBuilder Builder);
 
 #endif

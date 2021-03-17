@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vkc_5fbuildinstance_25',['VkC_BuildInstance',['../VkCSetup_8h.html#a13e8021bea25c6ace3fb98bc04b8dbc3',1,'VkC_BuildInstance(InstanceBuilder *Builder):&#160;VkCSetup.c'],['../VkCSetup_8c.html#a13e8021bea25c6ace3fb98bc04b8dbc3',1,'VkC_BuildInstance(InstanceBuilder *Builder):&#160;VkCSetup.c']]]
+  ['createdebugutilsmessengerext_27',['CreateDebugUtilsMessengerEXT',['../VkCSetup_8c.html#a761ebce14cb8767a4e480ea446f34ef2',1,'VkCSetup.c']]]
 ];

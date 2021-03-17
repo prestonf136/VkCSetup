@@ -12,6 +12,15 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
   return VK_FALSE;
 }
 
+bool isDeviceSuitable(VkPhysicalDevice *Device) {
+  VkPhysicalDeviceProperties deviceProperties;
+  vkGetPhysicalDeviceProperties(*Device, &deviceProperties);
+
+  printf("Device Name: %s\n", deviceProperties.deviceName);
+
+  return true;
+};
+
 int main() {
   InstanceBuilder IB;
   IB.AppName = "Hello World!";
@@ -21,7 +30,7 @@ int main() {
   IB.ApiVersion = VK_API_VERSION_1_0;
 
   IB.LayerCount = 1;
-  const char *validationLayers[] = {"VK_LAYERs_KHRONOS_validation"};
+  const char *validationLayers[] = {"VK_LAYER_KHRONOS_validation"};
   IB.LayerNames = validationLayers;
 
   IB.ExtentionCount = 2;
@@ -30,7 +39,15 @@ int main() {
   IB.ExtentionNames = Extentions;
 
   IB.EnableDebugMessager = true;
-  IB.DebugCallback = debugCallback;
+  IB.DebugCallback = NULL;
 
-  VkC_BuildInstance(&IB);
+  InstanceBuilderReturn IBR = VkC_BuildInstance(&IB);
+
+  PhysicalDeviceBuilder DB;
+  DB.isSuitableDevice = isDeviceSuitable;
+  DB.Instance = &IBR.Instance;
+
+  VkC_BuildPhysicalDevice(DB);
+
+  VkCS_DestroyDebugUtilsMessengerEXT(IBR.Instance, IBR.DebugMessenger, NULL);
 }

@@ -2,19 +2,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vulkan/vulkan_core.h>
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL
-DefaultCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                VkDebugUtilsMessageTypeFlagsEXT messageType,
-                const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-                void *pUserData) {
+VkCS_DefaultCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                     VkDebugUtilsMessageTypeFlagsEXT messageType,
+                     const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+                     void *pUserData) {
   if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
     fprintf(stderr, "Validation layer: %s\n", pCallbackData->pMessage);
   }
   return VK_FALSE;
 }
 
-VkResult CreateDebugUtilsMessengerEXT(
+VkResult VkCS_CreateDebugUtilsMessengerEXT(
     VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks *pAllocator,
     VkDebugUtilsMessengerEXT *pDebugMessenger) {
@@ -28,9 +29,9 @@ VkResult CreateDebugUtilsMessengerEXT(
   }
 }
 
-void DestroyDebugUtilsMessengerEXT(VkInstance instance,
-                                   VkDebugUtilsMessengerEXT debugMessenger,
-                                   const VkAllocationCallbacks *pAllocator) {
+void VkCS_DestroyDebugUtilsMessengerEXT(
+    VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
+    const VkAllocationCallbacks *pAllocator) {
   PFN_vkDestroyDebugUtilsMessengerEXT func =
       (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
           instance, "vkDestroyDebugUtilsMessengerEXT");
@@ -38,6 +39,15 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance,
     func(instance, debugMessenger, pAllocator);
   }
 }
+
+bool VkCS_isDeviceSuitable(VkPhysicalDevice *Device) {
+  VkPhysicalDeviceProperties deviceProperties;
+  vkGetPhysicalDeviceProperties(*Device, &deviceProperties);
+
+  printf("Device Name: %s\n", deviceProperties.deviceName);
+
+  return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+};
 
 /// function to create a vulkan instance
 InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
@@ -87,7 +97,7 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
     if (Builder->DebugCallback != NULL) {
       debugCreateInfo.pfnUserCallback = Builder->DebugCallback;
     } else {
-      debugCreateInfo.pfnUserCallback = DefaultCallback;
+      debugCreateInfo.pfnUserCallback = VkCS_DefaultCallback;
     }
     InstanceCreateInfo.pNext =
         (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
@@ -166,8 +176,6 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
     free(layers);
   }
 
-  VkDebugUtilsMessengerEXT debugMessenger;
-
   VkDebugUtilsMessengerCreateInfoEXT DebugMessangerCreateInfo = {};
   DebugMessangerCreateInfo.sType =
       VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -182,7 +190,7 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
   if (Builder->DebugCallback != NULL) {
     DebugMessangerCreateInfo.pfnUserCallback = Builder->DebugCallback;
   } else {
-    DebugMessangerCreateInfo.pfnUserCallback = DefaultCallback;
+    DebugMessangerCreateInfo.pfnUserCallback = VkCS_DefaultCallback;
   }
   DebugMessangerCreateInfo.pUserData = NULL;
 
@@ -191,10 +199,42 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
     LOG("[VkC Error]: Failed to create Vulkan Instance!\n");
   }
 
-  if (CreateDebugUtilsMessengerEXT(IBR.Instance, &DebugMessangerCreateInfo,
-                                   NULL, &debugMessenger) != VK_SUCCESS) {
+  if (VkCS_CreateDebugUtilsMessengerEXT(IBR.Instance, &DebugMessangerCreateInfo,
+                                        NULL,
+                                        &IBR.DebugMessenger) != VK_SUCCESS) {
     LOG("[VkC Error]: Failed to create Debug Messenger");
   };
 
   return IBR;
+};
+
+PhysicalDeviceBuilderReturn
+VkC_BuildPhysicalDevice(PhysicalDeviceBuilder Builder) {
+  PhysicalDeviceBuilderReturn PDBR;
+
+  uint32_t deviceCount = 0;
+  vkEnumeratePhysicalDevices(*Builder.Instance, &deviceCount, NULL);
+
+  VkPhysicalDevice *physicalDevices =
+      malloc(deviceCount * sizeof(VkPhysicalDevice));
+  vkEnumeratePhysicalDevices(*Builder.Instance, &deviceCount, physicalDevices);
+
+  int DevIndex = -1;
+  for (int i = 0; i < deviceCount; i++) {
+    if (Builder.isSuitableDevice != NULL) {
+      if (Builder.isSuitableDevice(&physicalDevices[i])) {
+        DevIndex = i;
+        break;
+      }
+    } else {
+      if (VkCS_isDeviceSuitable(&physicalDevices[i])) {
+        DevIndex = i;
+        break;
+      }
+    }
+  }
+
+  free(physicalDevices);
+
+  return PDBR;
 };
