@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['layercount_40',['LayerCount',['../structInstanceBuilder.html#ad960c3edcd284aedb8c88656a5822568',1,'InstanceBuilder']]],
-  ['layernames_41',['LayerNames',['../structInstanceBuilder.html#aa85c588f04e32943aa0f6629afdcd694',1,'InstanceBuilder']]]
+  ['instance_51',['Instance',['../structInstanceBuilderReturn.html#af934a400fa401b80d53b08b46dd090f6',1,'InstanceBuilderReturn::Instance()'],['../structPhysicalDeviceBuilder.html#a2b0ea3f0cc5d0ab653f93d3df37ce69d',1,'PhysicalDeviceBuilder::Instance()']]],
+  ['issuitabledevice_52',['isSuitableDevice',['../structPhysicalDeviceBuilder.html#ab413d285c700f4147a866de2bbf63a9e',1,'PhysicalDeviceBuilder']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['instance_39',['Instance',['../structInstanceBuilderReturn.html#af934a400fa401b80d53b08b46dd090f6',1,'InstanceBuilderReturn']]]
+  ['graphicsqueueindex_50',['GraphicsQueueIndex',['../structPhysicalDeviceBuilderReturn.html#aadc07da598684af361582be57276b0c6',1,'PhysicalDeviceBuilderReturn']]]
 ];

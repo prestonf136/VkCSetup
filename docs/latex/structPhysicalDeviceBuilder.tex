@@ -7,27 +7,39 @@
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-bool \mbox{\hyperlink{structPhysicalDeviceBuilder_a800cce576db9ed870ccf43a9946341c2}{Should\+Be\+Dedicated}}
+Vk\+Instance $\ast$ \mbox{\hyperlink{structPhysicalDeviceBuilder_a2b0ea3f0cc5d0ab653f93d3df37ce69d}{Instance}}
+\item 
+bool($\ast$ \mbox{\hyperlink{structPhysicalDeviceBuilder_ab413d285c700f4147a866de2bbf63a9e}{is\+Suitable\+Device}} )(Vk\+Physical\+Device $\ast$)
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-\mbox{[}NOT WORKING AS OF NOW\mbox{]} specifies the requirements a physical device should meet to be selected 
+specifies the requirements a physical device should meet to be selected 
 
-Definition at line 54 of file Vk\+CSetup.\+h.
+Definition at line 62 of file Vk\+CSetup.\+h.
 
 
 
 \doxysubsection{Member Data Documentation}
-\mbox{\Hypertarget{structPhysicalDeviceBuilder_a800cce576db9ed870ccf43a9946341c2}\label{structPhysicalDeviceBuilder_a800cce576db9ed870ccf43a9946341c2}} 
-\index{PhysicalDeviceBuilder@{PhysicalDeviceBuilder}!ShouldBeDedicated@{ShouldBeDedicated}}
-\index{ShouldBeDedicated@{ShouldBeDedicated}!PhysicalDeviceBuilder@{PhysicalDeviceBuilder}}
-\doxysubsubsection{\texorpdfstring{ShouldBeDedicated}{ShouldBeDedicated}}
-{\footnotesize\ttfamily bool Physical\+Device\+Builder\+::\+Should\+Be\+Dedicated}
+\mbox{\Hypertarget{structPhysicalDeviceBuilder_a2b0ea3f0cc5d0ab653f93d3df37ce69d}\label{structPhysicalDeviceBuilder_a2b0ea3f0cc5d0ab653f93d3df37ce69d}} 
+\index{PhysicalDeviceBuilder@{PhysicalDeviceBuilder}!Instance@{Instance}}
+\index{Instance@{Instance}!PhysicalDeviceBuilder@{PhysicalDeviceBuilder}}
+\doxysubsubsection{\texorpdfstring{Instance}{Instance}}
+{\footnotesize\ttfamily Vk\+Instance$\ast$ Physical\+Device\+Builder\+::\+Instance}
 
-when set to true Vk\+CSetup will only use physical devices with the VK\+\_\+\+PHYSICAL\+\_\+\+DEVICE\+\_\+\+TYPE\+\_\+\+DISCRETE\+\_\+\+GPU flag 
 
-Definition at line 55 of file Vk\+CSetup.\+h.
+
+Definition at line 63 of file Vk\+CSetup.\+h.
+
+\mbox{\Hypertarget{structPhysicalDeviceBuilder_ab413d285c700f4147a866de2bbf63a9e}\label{structPhysicalDeviceBuilder_ab413d285c700f4147a866de2bbf63a9e}} 
+\index{PhysicalDeviceBuilder@{PhysicalDeviceBuilder}!isSuitableDevice@{isSuitableDevice}}
+\index{isSuitableDevice@{isSuitableDevice}!PhysicalDeviceBuilder@{PhysicalDeviceBuilder}}
+\doxysubsubsection{\texorpdfstring{isSuitableDevice}{isSuitableDevice}}
+{\footnotesize\ttfamily bool($\ast$ Physical\+Device\+Builder\+::is\+Suitable\+Device) (Vk\+Physical\+Device $\ast$)}
+
+
+
+Definition at line 64 of file Vk\+CSetup.\+h.
 
 
 

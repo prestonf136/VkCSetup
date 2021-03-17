@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['createdebugutilsmessengerext_3',['CreateDebugUtilsMessengerEXT',['../VkCSetup_8c.html#a761ebce14cb8767a4e480ea446f34ef2',1,'VkCSetup.c']]]
+  ['debugcallback_3',['DebugCallback',['../structInstanceBuilder.html#a8f1e5541bdbea445812ffe1978f3a191',1,'InstanceBuilder']]],
+  ['debugmessenger_4',['DebugMessenger',['../structInstanceBuilderReturn.html#ae2baf260878a36f5cff209002565670a',1,'InstanceBuilderReturn']]]
 ];
