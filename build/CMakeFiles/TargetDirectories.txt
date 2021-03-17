@@ -1,0 +1,4 @@
+/home/preston/Documents/VkCSetup/build/CMakeFiles/rebuild_cache.dir
+/home/preston/Documents/VkCSetup/build/CMakeFiles/edit_cache.dir
+/home/preston/Documents/VkCSetup/build/CMakeFiles/Test.dir
+/home/preston/Documents/VkCSetup/build/CMakeFiles/VkCSetupL.dir

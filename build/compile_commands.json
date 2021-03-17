@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/preston/Documents/VkCSetup/build",
+  "command": "/usr/bin/clang-11 -I../include -g -o CMakeFiles/Test.dir/tests/test.c.o -c /home/preston/Documents/VkCSetup/tests/test.c",
+  "file": "/home/preston/Documents/VkCSetup/tests/test.c"
+},
+{
+  "directory": "/home/preston/Documents/VkCSetup/build",
+  "command": "/usr/bin/clang-11 -I../include -g -o CMakeFiles/VkCSetupL.dir/src/VkCSetup.c.o -c /home/preston/Documents/VkCSetup/src/VkCSetup.c",
+  "file": "/home/preston/Documents/VkCSetup/src/VkCSetup.c"
+}
+]
