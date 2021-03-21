@@ -1,8 +1,4 @@
 #include "VkCSetup.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <vulkan/vulkan_core.h>
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 VkCS_DefaultCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -44,13 +40,32 @@ bool VkCS_isDeviceSuitable(VkPhysicalDevice *Device) {
   VkPhysicalDeviceProperties deviceProperties;
   vkGetPhysicalDeviceProperties(*Device, &deviceProperties);
 
-  printf("Device Name: %s\n", deviceProperties.deviceName);
+  uint32_t extensionCount;
+  vkEnumerateDeviceExtensionProperties(*Device, NULL, &extensionCount, NULL);
 
-  return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+  VkExtensionProperties *availableExtensions =
+      malloc(extensionCount * sizeof(VkExtensionProperties));
+  vkEnumerateDeviceExtensionProperties(*Device, NULL, &extensionCount,
+                                       availableExtensions);
+
+  bool SwapChainSupport = false;
+
+  for (int i = 0; i < extensionCount; i++) {
+    if (strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+               availableExtensions[i].extensionName) == 0) {
+      SwapChainSupport = true;
+      break;
+    }
+  }
+
+  free(availableExtensions);
+
+  return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
+         SwapChainSupport;
 };
 
 /// function to create a vulkan instance
-InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
+InstanceBuilderReturn VkCS_BuildInstance(InstanceBuilder *Builder) {
   InstanceBuilderReturn IBR;
 
   VkApplicationInfo AppInfo = {};
@@ -79,7 +94,8 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
     }
 
     if (!FoundValidaitonLayer) {
-      LOG("[VkC Error]: if Builder.EnableDebugMessager is set to true "
+      VkCS_LOG(
+          "[VkCS Error]: if Builder.EnableDebugMessager is set to true "
           "Builder.LayerNames must contain VK_LAYER_KHRONOS_validation!\n");
     }
 
@@ -114,9 +130,9 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
     }
 
     if (!FoundValidaitonLayer) {
-      LOG("[VkC Error]: if Builder.EnableDebugMessager is set to true "
-          "Builder.ExtentionNames must contain "
-          "VK_EXT_DEBUG_UTILS_EXTENSION_NAME!\n");
+      VkCS_LOG("[VkCS Error]: if Builder.EnableDebugMessager is set to true "
+               "Builder.ExtentionNames must contain "
+               "VK_EXT_DEBUG_UTILS_EXTENSION_NAME!\n");
     }
   }
 
@@ -144,7 +160,7 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
     };
 
     if (FoundExtentions != Builder->ExtentionCount) {
-      LOG("[VkC Error]: Not all requested extentions could be found!\n");
+      VkCS_LOG("[VkCS Error]: Not all requested extentions could be found!\n");
     };
 
     free(extensions);
@@ -171,7 +187,7 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
       }
     };
     if (FoundLayers != Builder->LayerCount) {
-      LOG("[VkC Error]: Not all requested layers could be found!\n");
+      VkCS_LOG("[VkCS Error]: Not all requested layers could be found!\n");
     };
     free(layers);
   }
@@ -196,33 +212,33 @@ InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder) {
 
   VkResult Result = vkCreateInstance(&InstanceCreateInfo, NULL, &IBR.Instance);
   if (Result != VK_SUCCESS) {
-    LOG("[VkC Error]: Failed to create Vulkan Instance!\n");
+    VkCS_LOG("[VkCS Error]: Failed to create Vulkan Instance!\n");
   }
 
   if (VkCS_CreateDebugUtilsMessengerEXT(IBR.Instance, &DebugMessangerCreateInfo,
                                         NULL,
                                         &IBR.DebugMessenger) != VK_SUCCESS) {
-    LOG("[VkC Error]: Failed to create Debug Messenger");
+    VkCS_LOG("[VkCS Error]: Failed to create Debug Messenger\n");
   };
 
   return IBR;
 };
 
 PhysicalDeviceBuilderReturn
-VkC_BuildPhysicalDevice(PhysicalDeviceBuilder Builder) {
+VkCS_BuildPhysicalDevice(PhysicalDeviceBuilder *Builder) {
   PhysicalDeviceBuilderReturn PDBR;
 
   uint32_t deviceCount = 0;
-  vkEnumeratePhysicalDevices(*Builder.Instance, &deviceCount, NULL);
+  vkEnumeratePhysicalDevices(*Builder->Instance, &deviceCount, NULL);
 
   VkPhysicalDevice *physicalDevices =
       malloc(deviceCount * sizeof(VkPhysicalDevice));
-  vkEnumeratePhysicalDevices(*Builder.Instance, &deviceCount, physicalDevices);
+  vkEnumeratePhysicalDevices(*Builder->Instance, &deviceCount, physicalDevices);
 
   int DevIndex = -1;
   for (int i = 0; i < deviceCount; i++) {
-    if (Builder.isSuitableDevice != NULL) {
-      if (Builder.isSuitableDevice(&physicalDevices[i])) {
+    if (Builder->isSuitableDevice != NULL) {
+      if (Builder->isSuitableDevice(&physicalDevices[i])) {
         DevIndex = i;
         break;
       }
@@ -234,7 +250,108 @@ VkC_BuildPhysicalDevice(PhysicalDeviceBuilder Builder) {
     }
   }
 
+  if (DevIndex == -1) {
+    VkCS_LOG("[VkCS Error]: No suitable device found!");
+  } else {
+    PDBR.PhysicalDevice = physicalDevices[DevIndex];
+  }
+
   free(physicalDevices);
 
+  uint32_t queueFamilyCount = 0;
+  vkGetPhysicalDeviceQueueFamilyProperties(PDBR.PhysicalDevice,
+                                           &queueFamilyCount, NULL);
+
+  VkQueueFamilyProperties *queueFamilies =
+      malloc(queueFamilyCount * sizeof(VkQueueFamilyProperties));
+  vkGetPhysicalDeviceQueueFamilyProperties(PDBR.PhysicalDevice,
+                                           &queueFamilyCount, queueFamilies);
+
+  PDBR.GraphicsQueueIndex = -1;
+  PDBR.PresentQueueIndex = -1;
+  for (int i = 0; i < queueFamilyCount; i++) {
+    if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+      PDBR.GraphicsQueueIndex = i;
+    }
+
+    VkBool32 presentSupport = false;
+    vkGetPhysicalDeviceSurfaceSupportKHR(PDBR.PhysicalDevice, i,
+                                         *Builder->Surface, &presentSupport);
+    if (presentSupport) {
+      PDBR.PresentQueueIndex = i;
+    }
+
+    if (PDBR.GraphicsQueueIndex != -1 && PDBR.PresentQueueIndex != -1) {
+      break;
+    }
+  }
+
   return PDBR;
+};
+
+DeviceBuilderReturn VkCS_BuildLogicalDevice(DeviceBuilder *Builder) {
+  DeviceBuilderReturn DBR;
+
+  int count = 1;
+  if (Builder->PDBuilderReturn->GraphicsQueueIndex !=
+      Builder->PDBuilderReturn->PresentQueueIndex) {
+    count = 2;
+  }
+
+  float queuePriority = 1.0f;
+  VkDeviceQueueCreateInfo QueueCreateInfo = {};
+  QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+  QueueCreateInfo.queueFamilyIndex =
+      Builder->PDBuilderReturn->PresentQueueIndex;
+  QueueCreateInfo.queueCount = 1;
+  QueueCreateInfo.pQueuePriorities = &queuePriority;
+
+  VkDeviceQueueCreateInfo GraphicsQueuecreateInfo = {};
+  if (count > 1) {
+    GraphicsQueuecreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    GraphicsQueuecreateInfo.queueFamilyIndex =
+        Builder->PDBuilderReturn->GraphicsQueueIndex;
+    GraphicsQueuecreateInfo.queueCount = 1;
+    GraphicsQueuecreateInfo.pQueuePriorities = &queuePriority;
+  }
+
+  VkDeviceCreateInfo DeviceCreateInfo = {};
+  DeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+  if (count > 1) {
+    VkDeviceQueueCreateInfo QueueInfos[] = {QueueCreateInfo,
+                                            GraphicsQueuecreateInfo};
+    DeviceCreateInfo.pQueueCreateInfos = QueueInfos;
+  } else {
+    DeviceCreateInfo.pQueueCreateInfos = &QueueCreateInfo;
+  }
+
+  DeviceCreateInfo.queueCreateInfoCount = count;
+  DeviceCreateInfo.pEnabledFeatures = Builder->deviceFeatures;
+  DeviceCreateInfo.enabledLayerCount = Builder->LayerCount;
+  DeviceCreateInfo.ppEnabledLayerNames = Builder->LayerNames;
+  DeviceCreateInfo.enabledExtensionCount = 1;
+
+  const char *DeviceExtentions = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+  DeviceCreateInfo.ppEnabledExtensionNames = &DeviceExtentions;
+
+  if (vkCreateDevice(Builder->PDBuilderReturn->PhysicalDevice,
+                     &DeviceCreateInfo, NULL, &DBR.Device) != VK_SUCCESS) {
+    VkCS_LOG("[VkCS Error]: Failed to create logical Device");
+  }
+
+  vkGetDeviceQueue(DBR.Device, Builder->PDBuilderReturn->GraphicsQueueIndex, 0,
+                   &DBR.GraphicsQueue);
+  vkGetDeviceQueue(DBR.Device, Builder->PDBuilderReturn->PresentQueueIndex, 0,
+                   &DBR.PresentQueue);
+
+  return DBR;
+};
+
+SwapChainBuilderReturn VkCS_BuildSwapChain(SwapChainBuilder *Builder) {
+  SwapChainBuilderReturn SCBR;
+  VkSurfaceCapabilitiesKHR capabilities;
+  VkSurfaceFormatKHR *formats = NULL;
+  VkPresentModeKHR *presentModes = NULL;
+
+  return SCBR;
 };

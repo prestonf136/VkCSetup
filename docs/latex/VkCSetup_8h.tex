@@ -27,9 +27,9 @@ struct \mbox{\hyperlink{structPhysicalDeviceBuilderReturn}{Physical\+Device\+Bui
 void \mbox{\hyperlink{VkCSetup_8h_a893da7ca96d8a883c77a46c6aa803451}{Vk\+CS\+\_\+\+Destroy\+Debug\+Utils\+Messenger\+EXT}} (Vk\+Instance instance, Vk\+Debug\+Utils\+Messenger\+EXT debug\+Messenger, const Vk\+Allocation\+Callbacks $\ast$p\+Allocator)
 \item 
 \mbox{\hyperlink{structInstanceBuilderReturn}{Instance\+Builder\+Return}} \mbox{\hyperlink{VkCSetup_8h_a13e8021bea25c6ace3fb98bc04b8dbc3}{Vk\+C\+\_\+\+Build\+Instance}} (\mbox{\hyperlink{structInstanceBuilder}{Instance\+Builder}} $\ast$Builder)
-\begin{DoxyCompactList}\small\item\em function to create a vulkan instance \end{DoxyCompactList}\item 
-\mbox{\hyperlink{structPhysicalDeviceBuilderReturn}{Physical\+Device\+Builder\+Return}} \mbox{\hyperlink{VkCSetup_8h_a3c94449ee39350a10d6c4cb49f7c40c7}{Vk\+C\+\_\+\+Build\+Physical\+Device}} (\mbox{\hyperlink{structPhysicalDeviceBuilder}{Physical\+Device\+Builder}} Builder)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em builds the physical instance \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structPhysicalDeviceBuilderReturn}{Physical\+Device\+Builder\+Return}} \mbox{\hyperlink{VkCSetup_8h_a5b8af4c2e1053affefa51befdd12ccd6}{Vk\+C\+\_\+\+Build\+Physicaldevice}} (\mbox{\hyperlink{structPhysicalDeviceBuilder}{Physical\+Device\+Builder}} Builder)
+\begin{DoxyCompactList}\small\item\em builds the physical device \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Macro Definition Documentation}
@@ -54,216 +54,183 @@ Definition at line 13 of file Vk\+CSetup.\+h.
 
 
 
-function to create a vulkan instance 
+builds the physical instance 
 
+builds the physical instance 
 
-
-Definition at line 53 of file Vk\+CSetup.\+c.
+Definition at line 51 of file Vk\+CSetup.\+c.
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{53                                                                   \{}
-\DoxyCodeLine{54   \mbox{\hyperlink{structInstanceBuilderReturn}{InstanceBuilderReturn}} IBR;}
-\DoxyCodeLine{55 }
-\DoxyCodeLine{56   VkApplicationInfo AppInfo = \{\};}
-\DoxyCodeLine{57   AppInfo.sType = VK\_STRUCTURE\_TYPE\_APPLICATION\_INFO;}
-\DoxyCodeLine{58   AppInfo.pApplicationName = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8bfac82d2c7c8ec9f01538449f80e49e}{AppName}};}
-\DoxyCodeLine{59   AppInfo.applicationVersion = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0d9b1172f8abff26df88f440a45ca322}{AppVersion}};}
-\DoxyCodeLine{60   AppInfo.pEngineName = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aee994ed51b514aec5cb295c37764aaf9}{EngineName}};}
-\DoxyCodeLine{61   AppInfo.engineVersion = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a62b135116b522db558448be4ebc65f99}{EngineVersion}};}
-\DoxyCodeLine{62   AppInfo.apiVersion = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa814b1bc21f21c5dfd00aada038c0a96}{ApiVersion}};}
-\DoxyCodeLine{63 }
-\DoxyCodeLine{64   VkInstanceCreateInfo InstanceCreateInfo = \{\};}
-\DoxyCodeLine{65   InstanceCreateInfo.sType = VK\_STRUCTURE\_TYPE\_INSTANCE\_CREATE\_INFO;}
-\DoxyCodeLine{66   InstanceCreateInfo.pApplicationInfo = \&AppInfo;}
-\DoxyCodeLine{67   InstanceCreateInfo.enabledExtensionCount = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}};}
-\DoxyCodeLine{68   InstanceCreateInfo.ppEnabledExtensionNames = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0535b269cdd824844b96ee5ac1785a22}{ExtentionNames}};}
-\DoxyCodeLine{69   InstanceCreateInfo.enabledLayerCount = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}};}
-\DoxyCodeLine{70   InstanceCreateInfo.ppEnabledLayerNames = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa85c588f04e32943aa0f6629afdcd694}{LayerNames}};}
-\DoxyCodeLine{71 }
-\DoxyCodeLine{72   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a84198c2025bc89fd642fdfe7e710d5ef}{EnableDebugMessager}}) \{}
-\DoxyCodeLine{73     \textcolor{keywordtype}{bool} FoundValidaitonLayer = \textcolor{keyword}{false};}
-\DoxyCodeLine{74     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}; i++) \{}
-\DoxyCodeLine{75       \textcolor{keywordflow}{if} (strcmp(\textcolor{stringliteral}{"{}VK\_LAYER\_KHRONOS\_validation"{}}, Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa85c588f04e32943aa0f6629afdcd694}{LayerNames}}[i]) == 0) \{}
-\DoxyCodeLine{76         FoundValidaitonLayer = \textcolor{keyword}{true};}
-\DoxyCodeLine{77         \textcolor{keywordflow}{break};}
-\DoxyCodeLine{78       \}}
-\DoxyCodeLine{79     \}}
-\DoxyCodeLine{80 }
-\DoxyCodeLine{81     \textcolor{keywordflow}{if} (!FoundValidaitonLayer) \{}
-\DoxyCodeLine{82       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: if Builder.EnableDebugMessager is set to true "{}}}
-\DoxyCodeLine{83           \textcolor{stringliteral}{"{}Builder.LayerNames must contain VK\_LAYER\_KHRONOS\_validation!\(\backslash\)n"{}});}
-\DoxyCodeLine{84     \}}
-\DoxyCodeLine{85 }
-\DoxyCodeLine{86     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = \{\};}
-\DoxyCodeLine{87     debugCreateInfo.sType =}
-\DoxyCodeLine{88         VK\_STRUCTURE\_TYPE\_DEBUG\_UTILS\_MESSENGER\_CREATE\_INFO\_EXT;}
-\DoxyCodeLine{89     debugCreateInfo.messageSeverity =}
-\DoxyCodeLine{90         VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_VERBOSE\_BIT\_EXT |}
-\DoxyCodeLine{91         VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_WARNING\_BIT\_EXT |}
-\DoxyCodeLine{92         VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_ERROR\_BIT\_EXT;}
-\DoxyCodeLine{93     debugCreateInfo.messageType =}
-\DoxyCodeLine{94         VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_GENERAL\_BIT\_EXT |}
-\DoxyCodeLine{95         VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_VALIDATION\_BIT\_EXT |}
-\DoxyCodeLine{96         VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_PERFORMANCE\_BIT\_EXT;}
-\DoxyCodeLine{97     \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}} != NULL) \{}
-\DoxyCodeLine{98       debugCreateInfo.pfnUserCallback = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}};}
-\DoxyCodeLine{99     \} \textcolor{keywordflow}{else} \{}
-\DoxyCodeLine{100       debugCreateInfo.pfnUserCallback = VkCS\_DefaultCallback;}
-\DoxyCodeLine{101     \}}
-\DoxyCodeLine{102     InstanceCreateInfo.pNext =}
-\DoxyCodeLine{103         (VkDebugUtilsMessengerCreateInfoEXT *)\&debugCreateInfo;}
-\DoxyCodeLine{104   \}}
-\DoxyCodeLine{105 }
-\DoxyCodeLine{106   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a84198c2025bc89fd642fdfe7e710d5ef}{EnableDebugMessager}}) \{}
-\DoxyCodeLine{107     \textcolor{keywordtype}{bool} FoundValidaitonLayer = \textcolor{keyword}{false};}
-\DoxyCodeLine{108     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}; i++) \{}
-\DoxyCodeLine{109       \textcolor{keywordflow}{if} (strcmp(VK\_EXT\_DEBUG\_UTILS\_EXTENSION\_NAME,}
-\DoxyCodeLine{110                  Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0535b269cdd824844b96ee5ac1785a22}{ExtentionNames}}[i]) == 0) \{}
-\DoxyCodeLine{111         FoundValidaitonLayer = \textcolor{keyword}{true};}
-\DoxyCodeLine{112         \textcolor{keywordflow}{break};}
-\DoxyCodeLine{113       \}}
-\DoxyCodeLine{114     \}}
-\DoxyCodeLine{115 }
-\DoxyCodeLine{116     \textcolor{keywordflow}{if} (!FoundValidaitonLayer) \{}
-\DoxyCodeLine{117       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: if Builder.EnableDebugMessager is set to true "{}}}
-\DoxyCodeLine{118           \textcolor{stringliteral}{"{}Builder.ExtentionNames must contain "{}}}
-\DoxyCodeLine{119           \textcolor{stringliteral}{"{}VK\_EXT\_DEBUG\_UTILS\_EXTENSION\_NAME!\(\backslash\)n"{}});}
-\DoxyCodeLine{120     \}}
-\DoxyCodeLine{121   \}}
-\DoxyCodeLine{122 }
-\DoxyCodeLine{123   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}} > 0) \{}
-\DoxyCodeLine{124     uint32\_t extensionCount = 0;}
-\DoxyCodeLine{125     vkEnumerateInstanceExtensionProperties(NULL, \&extensionCount, NULL);}
-\DoxyCodeLine{126 }
-\DoxyCodeLine{127     VkExtensionProperties *extensions =}
-\DoxyCodeLine{128         malloc(extensionCount * \textcolor{keyword}{sizeof}(VkExtensionProperties));}
+\DoxyCodeLine{51                                                                   \{}
+\DoxyCodeLine{52   \mbox{\hyperlink{structInstanceBuilderReturn}{InstanceBuilderReturn}} IBR;}
+\DoxyCodeLine{53 }
+\DoxyCodeLine{54   VkApplicationInfo AppInfo = \{\};}
+\DoxyCodeLine{55   AppInfo.sType = VK\_STRUCTURE\_TYPE\_APPLICATION\_INFO;}
+\DoxyCodeLine{56   AppInfo.pApplicationName = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8bfac82d2c7c8ec9f01538449f80e49e}{AppName}};}
+\DoxyCodeLine{57   AppInfo.applicationVersion = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0d9b1172f8abff26df88f440a45ca322}{AppVersion}};}
+\DoxyCodeLine{58   AppInfo.pEngineName = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aee994ed51b514aec5cb295c37764aaf9}{EngineName}};}
+\DoxyCodeLine{59   AppInfo.engineVersion = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a62b135116b522db558448be4ebc65f99}{EngineVersion}};}
+\DoxyCodeLine{60   AppInfo.apiVersion = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa814b1bc21f21c5dfd00aada038c0a96}{ApiVersion}};}
+\DoxyCodeLine{61 }
+\DoxyCodeLine{62   VkInstanceCreateInfo InstanceCreateInfo = \{\};}
+\DoxyCodeLine{63   InstanceCreateInfo.sType = VK\_STRUCTURE\_TYPE\_INSTANCE\_CREATE\_INFO;}
+\DoxyCodeLine{64   InstanceCreateInfo.pApplicationInfo = \&AppInfo;}
+\DoxyCodeLine{65   InstanceCreateInfo.enabledExtensionCount = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}};}
+\DoxyCodeLine{66   InstanceCreateInfo.ppEnabledExtensionNames = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0535b269cdd824844b96ee5ac1785a22}{ExtentionNames}};}
+\DoxyCodeLine{67   InstanceCreateInfo.enabledLayerCount = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}};}
+\DoxyCodeLine{68   InstanceCreateInfo.ppEnabledLayerNames = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa85c588f04e32943aa0f6629afdcd694}{LayerNames}};}
+\DoxyCodeLine{69 }
+\DoxyCodeLine{70   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a84198c2025bc89fd642fdfe7e710d5ef}{EnableDebugMessager}}) \{}
+\DoxyCodeLine{71     \textcolor{keywordtype}{bool} FoundValidaitonLayer = \textcolor{keyword}{false};}
+\DoxyCodeLine{72     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}; i++) \{}
+\DoxyCodeLine{73       \textcolor{keywordflow}{if} (strcmp(\textcolor{stringliteral}{"{}VK\_LAYER\_KHRONOS\_validation"{}}, Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa85c588f04e32943aa0f6629afdcd694}{LayerNames}}[i]) == 0) \{}
+\DoxyCodeLine{74         FoundValidaitonLayer = \textcolor{keyword}{true};}
+\DoxyCodeLine{75         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{76       \}}
+\DoxyCodeLine{77     \}}
+\DoxyCodeLine{78 }
+\DoxyCodeLine{79     \textcolor{keywordflow}{if} (!FoundValidaitonLayer) \{}
+\DoxyCodeLine{80       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: if Builder.EnableDebugMessager is set to true "{}}}
+\DoxyCodeLine{81           \textcolor{stringliteral}{"{}Builder.LayerNames must contain VK\_LAYER\_KHRONOS\_validation!\(\backslash\)n"{}});}
+\DoxyCodeLine{82     \}}
+\DoxyCodeLine{83 }
+\DoxyCodeLine{84     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = \{\};}
+\DoxyCodeLine{85     debugCreateInfo.sType =}
+\DoxyCodeLine{86         VK\_STRUCTURE\_TYPE\_DEBUG\_UTILS\_MESSENGER\_CREATE\_INFO\_EXT;}
+\DoxyCodeLine{87     debugCreateInfo.messageSeverity =}
+\DoxyCodeLine{88         VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_VERBOSE\_BIT\_EXT |}
+\DoxyCodeLine{89         VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_WARNING\_BIT\_EXT |}
+\DoxyCodeLine{90         VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_ERROR\_BIT\_EXT;}
+\DoxyCodeLine{91     debugCreateInfo.messageType =}
+\DoxyCodeLine{92         VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_GENERAL\_BIT\_EXT |}
+\DoxyCodeLine{93         VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_VALIDATION\_BIT\_EXT |}
+\DoxyCodeLine{94         VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_PERFORMANCE\_BIT\_EXT;}
+\DoxyCodeLine{95     \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}} != NULL) \{}
+\DoxyCodeLine{96       debugCreateInfo.pfnUserCallback = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}};}
+\DoxyCodeLine{97     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{98       debugCreateInfo.pfnUserCallback = VkCS\_DefaultCallback;}
+\DoxyCodeLine{99     \}}
+\DoxyCodeLine{100     InstanceCreateInfo.pNext =}
+\DoxyCodeLine{101         (VkDebugUtilsMessengerCreateInfoEXT *)\&debugCreateInfo;}
+\DoxyCodeLine{102   \}}
+\DoxyCodeLine{103 }
+\DoxyCodeLine{104   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a84198c2025bc89fd642fdfe7e710d5ef}{EnableDebugMessager}}) \{}
+\DoxyCodeLine{105     \textcolor{keywordtype}{bool} FoundValidaitonLayer = \textcolor{keyword}{false};}
+\DoxyCodeLine{106     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}; i++) \{}
+\DoxyCodeLine{107       \textcolor{keywordflow}{if} (strcmp(VK\_EXT\_DEBUG\_UTILS\_EXTENSION\_NAME,}
+\DoxyCodeLine{108                  Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0535b269cdd824844b96ee5ac1785a22}{ExtentionNames}}[i]) == 0) \{}
+\DoxyCodeLine{109         FoundValidaitonLayer = \textcolor{keyword}{true};}
+\DoxyCodeLine{110         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{111       \}}
+\DoxyCodeLine{112     \}}
+\DoxyCodeLine{113 }
+\DoxyCodeLine{114     \textcolor{keywordflow}{if} (!FoundValidaitonLayer) \{}
+\DoxyCodeLine{115       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: if Builder.EnableDebugMessager is set to true "{}}}
+\DoxyCodeLine{116           \textcolor{stringliteral}{"{}Builder.ExtentionNames must contain "{}}}
+\DoxyCodeLine{117           \textcolor{stringliteral}{"{}VK\_EXT\_DEBUG\_UTILS\_EXTENSION\_NAME!\(\backslash\)n"{}});}
+\DoxyCodeLine{118     \}}
+\DoxyCodeLine{119   \}}
+\DoxyCodeLine{120 }
+\DoxyCodeLine{121   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}} > 0) \{}
+\DoxyCodeLine{122     uint32\_t extensionCount = 0;}
+\DoxyCodeLine{123     vkEnumerateInstanceExtensionProperties(NULL, \&extensionCount, NULL);}
+\DoxyCodeLine{124 }
+\DoxyCodeLine{125     VkExtensionProperties *extensions =}
+\DoxyCodeLine{126         malloc(extensionCount * \textcolor{keyword}{sizeof}(VkExtensionProperties));}
+\DoxyCodeLine{127 }
+\DoxyCodeLine{128     vkEnumerateInstanceExtensionProperties(NULL, \&extensionCount, extensions);}
 \DoxyCodeLine{129 }
-\DoxyCodeLine{130     vkEnumerateInstanceExtensionProperties(NULL, \&extensionCount, extensions);}
-\DoxyCodeLine{131 }
-\DoxyCodeLine{132     \textcolor{keywordtype}{int} FoundExtentions = 0;}
-\DoxyCodeLine{133     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}; i++) \{}
-\DoxyCodeLine{134       \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} j = 0; j < extensionCount; j++) \{}
-\DoxyCodeLine{135         \textcolor{keywordflow}{if} (strcmp(extensions[j].extensionName, Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0535b269cdd824844b96ee5ac1785a22}{ExtentionNames}}[i]) ==}
-\DoxyCodeLine{136             0) \{}
-\DoxyCodeLine{137           ++FoundExtentions;}
-\DoxyCodeLine{138           \textcolor{keywordflow}{break};}
-\DoxyCodeLine{139         \}}
-\DoxyCodeLine{140       \}}
-\DoxyCodeLine{141       \textcolor{keywordflow}{if} (FoundExtentions == Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}) \{}
-\DoxyCodeLine{142         \textcolor{keywordflow}{break};}
-\DoxyCodeLine{143       \}}
-\DoxyCodeLine{144     \};}
-\DoxyCodeLine{145 }
-\DoxyCodeLine{146     \textcolor{keywordflow}{if} (FoundExtentions != Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}) \{}
-\DoxyCodeLine{147       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Not all requested extentions could be found!\(\backslash\)n"{}});}
-\DoxyCodeLine{148     \};}
-\DoxyCodeLine{149 }
-\DoxyCodeLine{150     free(extensions);}
-\DoxyCodeLine{151   \}}
-\DoxyCodeLine{152 }
-\DoxyCodeLine{153   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}} > 0) \{}
-\DoxyCodeLine{154     uint32\_t layerCount;}
-\DoxyCodeLine{155     vkEnumerateInstanceLayerProperties(\&layerCount, NULL);}
+\DoxyCodeLine{130     \textcolor{keywordtype}{int} FoundExtentions = 0;}
+\DoxyCodeLine{131     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}; i++) \{}
+\DoxyCodeLine{132       \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} j = 0; j < extensionCount; j++) \{}
+\DoxyCodeLine{133         \textcolor{keywordflow}{if} (strcmp(extensions[j].extensionName, Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a0535b269cdd824844b96ee5ac1785a22}{ExtentionNames}}[i]) ==}
+\DoxyCodeLine{134             0) \{}
+\DoxyCodeLine{135           ++FoundExtentions;}
+\DoxyCodeLine{136           \textcolor{keywordflow}{break};}
+\DoxyCodeLine{137         \}}
+\DoxyCodeLine{138       \}}
+\DoxyCodeLine{139       \textcolor{keywordflow}{if} (FoundExtentions == Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}) \{}
+\DoxyCodeLine{140         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{141       \}}
+\DoxyCodeLine{142     \};}
+\DoxyCodeLine{143 }
+\DoxyCodeLine{144     \textcolor{keywordflow}{if} (FoundExtentions != Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ae96eedcb01ceeba14846cbb995715eb8}{ExtentionCount}}) \{}
+\DoxyCodeLine{145       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Not all requested extentions could be found!\(\backslash\)n"{}});}
+\DoxyCodeLine{146     \};}
+\DoxyCodeLine{147 }
+\DoxyCodeLine{148     free(extensions);}
+\DoxyCodeLine{149   \}}
+\DoxyCodeLine{150 }
+\DoxyCodeLine{151   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}} > 0) \{}
+\DoxyCodeLine{152     uint32\_t layerCount;}
+\DoxyCodeLine{153     vkEnumerateInstanceLayerProperties(\&layerCount, NULL);}
+\DoxyCodeLine{154 }
+\DoxyCodeLine{155     VkLayerProperties *layers = malloc(layerCount * \textcolor{keyword}{sizeof}(VkLayerProperties));}
 \DoxyCodeLine{156 }
-\DoxyCodeLine{157     VkLayerProperties *layers = malloc(layerCount * \textcolor{keyword}{sizeof}(VkLayerProperties));}
-\DoxyCodeLine{158 }
-\DoxyCodeLine{159     vkEnumerateInstanceLayerProperties(\&layerCount, layers);}
-\DoxyCodeLine{160     \textcolor{keywordtype}{int} FoundLayers = 0;}
-\DoxyCodeLine{161     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}; i++) \{}
-\DoxyCodeLine{162       \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} j = 0; j < layerCount; j++) \{}
-\DoxyCodeLine{163         \textcolor{keywordflow}{if} (strcmp(layers[j].layerName, Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa85c588f04e32943aa0f6629afdcd694}{LayerNames}}[i]) == 0) \{}
-\DoxyCodeLine{164           ++FoundLayers;}
-\DoxyCodeLine{165           \textcolor{keywordflow}{break};}
-\DoxyCodeLine{166         \}}
-\DoxyCodeLine{167 }
-\DoxyCodeLine{168         \textcolor{keywordflow}{if} (FoundLayers == Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}) \{}
-\DoxyCodeLine{169           \textcolor{keywordflow}{break};}
-\DoxyCodeLine{170         \}}
-\DoxyCodeLine{171       \}}
-\DoxyCodeLine{172     \};}
-\DoxyCodeLine{173     \textcolor{keywordflow}{if} (FoundLayers != Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}) \{}
-\DoxyCodeLine{174       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Not all requested layers could be found!\(\backslash\)n"{}});}
-\DoxyCodeLine{175     \};}
-\DoxyCodeLine{176     free(layers);}
-\DoxyCodeLine{177   \}}
-\DoxyCodeLine{178 }
-\DoxyCodeLine{179   VkDebugUtilsMessengerCreateInfoEXT DebugMessangerCreateInfo = \{\};}
-\DoxyCodeLine{180   DebugMessangerCreateInfo.sType =}
-\DoxyCodeLine{181       VK\_STRUCTURE\_TYPE\_DEBUG\_UTILS\_MESSENGER\_CREATE\_INFO\_EXT;}
-\DoxyCodeLine{182   DebugMessangerCreateInfo.messageSeverity =}
-\DoxyCodeLine{183       VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_VERBOSE\_BIT\_EXT |}
-\DoxyCodeLine{184       VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_WARNING\_BIT\_EXT |}
-\DoxyCodeLine{185       VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_ERROR\_BIT\_EXT;}
-\DoxyCodeLine{186   DebugMessangerCreateInfo.messageType =}
-\DoxyCodeLine{187       VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_GENERAL\_BIT\_EXT |}
-\DoxyCodeLine{188       VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_VALIDATION\_BIT\_EXT |}
-\DoxyCodeLine{189       VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_PERFORMANCE\_BIT\_EXT;}
-\DoxyCodeLine{190   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}} != NULL) \{}
-\DoxyCodeLine{191     DebugMessangerCreateInfo.pfnUserCallback = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}};}
-\DoxyCodeLine{192   \} \textcolor{keywordflow}{else} \{}
-\DoxyCodeLine{193     DebugMessangerCreateInfo.pfnUserCallback = VkCS\_DefaultCallback;}
-\DoxyCodeLine{194   \}}
-\DoxyCodeLine{195   DebugMessangerCreateInfo.pUserData = NULL;}
-\DoxyCodeLine{196 }
-\DoxyCodeLine{197   VkResult Result = vkCreateInstance(\&InstanceCreateInfo, NULL, \&IBR.\mbox{\hyperlink{structInstanceBuilderReturn_af934a400fa401b80d53b08b46dd090f6}{Instance}});}
-\DoxyCodeLine{198   \textcolor{keywordflow}{if} (Result != VK\_SUCCESS) \{}
-\DoxyCodeLine{199     \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Failed to create Vulkan Instance!\(\backslash\)n"{}});}
-\DoxyCodeLine{200   \}}
-\DoxyCodeLine{201 }
-\DoxyCodeLine{202   \textcolor{keywordflow}{if} (\mbox{\hyperlink{VkCSetup_8c_ad4037c3e4662047cd3640920ddb77e90}{VkCS\_CreateDebugUtilsMessengerEXT}}(IBR.\mbox{\hyperlink{structInstanceBuilderReturn_af934a400fa401b80d53b08b46dd090f6}{Instance}}, \&DebugMessangerCreateInfo,}
-\DoxyCodeLine{203                                         NULL,}
-\DoxyCodeLine{204                                         \&IBR.\mbox{\hyperlink{structInstanceBuilderReturn_ae2baf260878a36f5cff209002565670a}{DebugMessenger}}) != VK\_SUCCESS) \{}
-\DoxyCodeLine{205     \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Failed to create Debug Messenger"{}});}
-\DoxyCodeLine{206   \};}
-\DoxyCodeLine{207 }
-\DoxyCodeLine{208   \textcolor{keywordflow}{return} IBR;}
-\DoxyCodeLine{209 \};}
+\DoxyCodeLine{157     vkEnumerateInstanceLayerProperties(\&layerCount, layers);}
+\DoxyCodeLine{158     \textcolor{keywordtype}{int} FoundLayers = 0;}
+\DoxyCodeLine{159     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}; i++) \{}
+\DoxyCodeLine{160       \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} j = 0; j < layerCount; j++) \{}
+\DoxyCodeLine{161         \textcolor{keywordflow}{if} (strcmp(layers[j].layerName, Builder-\/>\mbox{\hyperlink{structInstanceBuilder_aa85c588f04e32943aa0f6629afdcd694}{LayerNames}}[i]) == 0) \{}
+\DoxyCodeLine{162           ++FoundLayers;}
+\DoxyCodeLine{163           \textcolor{keywordflow}{break};}
+\DoxyCodeLine{164         \}}
+\DoxyCodeLine{165 }
+\DoxyCodeLine{166         \textcolor{keywordflow}{if} (FoundLayers == Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}) \{}
+\DoxyCodeLine{167           \textcolor{keywordflow}{break};}
+\DoxyCodeLine{168         \}}
+\DoxyCodeLine{169       \}}
+\DoxyCodeLine{170     \};}
+\DoxyCodeLine{171     \textcolor{keywordflow}{if} (FoundLayers != Builder-\/>\mbox{\hyperlink{structInstanceBuilder_ad960c3edcd284aedb8c88656a5822568}{LayerCount}}) \{}
+\DoxyCodeLine{172       \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Not all requested layers could be found!\(\backslash\)n"{}});}
+\DoxyCodeLine{173     \};}
+\DoxyCodeLine{174     free(layers);}
+\DoxyCodeLine{175   \}}
+\DoxyCodeLine{176 }
+\DoxyCodeLine{177   VkDebugUtilsMessengerCreateInfoEXT DebugMessangerCreateInfo = \{\};}
+\DoxyCodeLine{178   DebugMessangerCreateInfo.sType =}
+\DoxyCodeLine{179       VK\_STRUCTURE\_TYPE\_DEBUG\_UTILS\_MESSENGER\_CREATE\_INFO\_EXT;}
+\DoxyCodeLine{180   DebugMessangerCreateInfo.messageSeverity =}
+\DoxyCodeLine{181       VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_VERBOSE\_BIT\_EXT |}
+\DoxyCodeLine{182       VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_WARNING\_BIT\_EXT |}
+\DoxyCodeLine{183       VK\_DEBUG\_UTILS\_MESSAGE\_SEVERITY\_ERROR\_BIT\_EXT;}
+\DoxyCodeLine{184   DebugMessangerCreateInfo.messageType =}
+\DoxyCodeLine{185       VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_GENERAL\_BIT\_EXT |}
+\DoxyCodeLine{186       VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_VALIDATION\_BIT\_EXT |}
+\DoxyCodeLine{187       VK\_DEBUG\_UTILS\_MESSAGE\_TYPE\_PERFORMANCE\_BIT\_EXT;}
+\DoxyCodeLine{188   \textcolor{keywordflow}{if} (Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}} != NULL) \{}
+\DoxyCodeLine{189     DebugMessangerCreateInfo.pfnUserCallback = Builder-\/>\mbox{\hyperlink{structInstanceBuilder_a8f1e5541bdbea445812ffe1978f3a191}{DebugCallback}};}
+\DoxyCodeLine{190   \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{191     DebugMessangerCreateInfo.pfnUserCallback = VkCS\_DefaultCallback;}
+\DoxyCodeLine{192   \}}
+\DoxyCodeLine{193   DebugMessangerCreateInfo.pUserData = NULL;}
+\DoxyCodeLine{194 }
+\DoxyCodeLine{195   VkResult Result = vkCreateInstance(\&InstanceCreateInfo, NULL, \&IBR.\mbox{\hyperlink{structInstanceBuilderReturn_af934a400fa401b80d53b08b46dd090f6}{Instance}});}
+\DoxyCodeLine{196   \textcolor{keywordflow}{if} (Result != VK\_SUCCESS) \{}
+\DoxyCodeLine{197     \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Failed to create Vulkan Instance!\(\backslash\)n"{}});}
+\DoxyCodeLine{198   \}}
+\DoxyCodeLine{199 }
+\DoxyCodeLine{200   \textcolor{keywordflow}{if} (\mbox{\hyperlink{VkCSetup_8c_ad4037c3e4662047cd3640920ddb77e90}{VkCS\_CreateDebugUtilsMessengerEXT}}(IBR.\mbox{\hyperlink{structInstanceBuilderReturn_af934a400fa401b80d53b08b46dd090f6}{Instance}}, \&DebugMessangerCreateInfo,}
+\DoxyCodeLine{201                                         NULL,}
+\DoxyCodeLine{202                                         \&IBR.\mbox{\hyperlink{structInstanceBuilderReturn_ae2baf260878a36f5cff209002565670a}{DebugMessenger}}) != VK\_SUCCESS) \{}
+\DoxyCodeLine{203     \mbox{\hyperlink{VkCSetup_8h_af855c94dc540e943632089ce7496faac}{LOG}}(\textcolor{stringliteral}{"{}[VkC Error]: Failed to create Debug Messenger"{}});}
+\DoxyCodeLine{204   \};}
+\DoxyCodeLine{205 }
+\DoxyCodeLine{206   \textcolor{keywordflow}{return} IBR;}
+\DoxyCodeLine{207 \};}
 
 \end{DoxyCode}
-\mbox{\Hypertarget{VkCSetup_8h_a3c94449ee39350a10d6c4cb49f7c40c7}\label{VkCSetup_8h_a3c94449ee39350a10d6c4cb49f7c40c7}} 
-\index{VkCSetup.h@{VkCSetup.h}!VkC\_BuildPhysicalDevice@{VkC\_BuildPhysicalDevice}}
-\index{VkC\_BuildPhysicalDevice@{VkC\_BuildPhysicalDevice}!VkCSetup.h@{VkCSetup.h}}
-\doxysubsubsection{\texorpdfstring{VkC\_BuildPhysicalDevice()}{VkC\_BuildPhysicalDevice()}}
-{\footnotesize\ttfamily \mbox{\hyperlink{structPhysicalDeviceBuilderReturn}{Physical\+Device\+Builder\+Return}} Vk\+C\+\_\+\+Build\+Physical\+Device (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structPhysicalDeviceBuilder}{Physical\+Device\+Builder}}}]{Builder }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{VkCSetup_8h_a5b8af4c2e1053affefa51befdd12ccd6}\label{VkCSetup_8h_a5b8af4c2e1053affefa51befdd12ccd6}} 
+\index{VkCSetup.h@{VkCSetup.h}!VkC\_BuildPhysicaldevice@{VkC\_BuildPhysicaldevice}}
+\index{VkC\_BuildPhysicaldevice@{VkC\_BuildPhysicaldevice}!VkCSetup.h@{VkCSetup.h}}
+\doxysubsubsection{\texorpdfstring{VkC\_BuildPhysicaldevice()}{VkC\_BuildPhysicaldevice()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structPhysicalDeviceBuilderReturn}{Physical\+Device\+Builder\+Return}} Vk\+C\+\_\+\+Build\+Physicaldevice (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structPhysicalDeviceBuilder}{Physical\+Device\+Builder}}}]{Builder }\end{DoxyParamCaption})}
 
 
 
-Definition at line 212 of file Vk\+CSetup.\+c.
+builds the physical device 
 
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{212                                                        \{}
-\DoxyCodeLine{213   \mbox{\hyperlink{structPhysicalDeviceBuilderReturn}{PhysicalDeviceBuilderReturn}} PDBR;}
-\DoxyCodeLine{214 }
-\DoxyCodeLine{215   uint32\_t deviceCount = 0;}
-\DoxyCodeLine{216   vkEnumeratePhysicalDevices(*Builder.\mbox{\hyperlink{structPhysicalDeviceBuilder_a2b0ea3f0cc5d0ab653f93d3df37ce69d}{Instance}}, \&deviceCount, NULL);}
-\DoxyCodeLine{217 }
-\DoxyCodeLine{218   VkPhysicalDevice *physicalDevices =}
-\DoxyCodeLine{219       malloc(deviceCount * \textcolor{keyword}{sizeof}(VkPhysicalDevice));}
-\DoxyCodeLine{220   vkEnumeratePhysicalDevices(*Builder.\mbox{\hyperlink{structPhysicalDeviceBuilder_a2b0ea3f0cc5d0ab653f93d3df37ce69d}{Instance}}, \&deviceCount, physicalDevices);}
-\DoxyCodeLine{221 }
-\DoxyCodeLine{222   \textcolor{keywordtype}{int} DevIndex = -\/1;}
-\DoxyCodeLine{223   \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < deviceCount; i++) \{}
-\DoxyCodeLine{224     \textcolor{keywordflow}{if} (Builder.\mbox{\hyperlink{structPhysicalDeviceBuilder_ab413d285c700f4147a866de2bbf63a9e}{isSuitableDevice}} != NULL) \{}
-\DoxyCodeLine{225       \textcolor{keywordflow}{if} (Builder.\mbox{\hyperlink{structPhysicalDeviceBuilder_ab413d285c700f4147a866de2bbf63a9e}{isSuitableDevice}}(\&physicalDevices[i])) \{}
-\DoxyCodeLine{226         DevIndex = i;}
-\DoxyCodeLine{227         \textcolor{keywordflow}{break};}
-\DoxyCodeLine{228       \}}
-\DoxyCodeLine{229     \} \textcolor{keywordflow}{else} \{}
-\DoxyCodeLine{230       \textcolor{keywordflow}{if} (\mbox{\hyperlink{VkCSetup_8c_acdcf0d1b4472797ce1eb0bf8261b4ed2}{VkCS\_isDeviceSuitable}}(\&physicalDevices[i])) \{}
-\DoxyCodeLine{231         DevIndex = i;}
-\DoxyCodeLine{232         \textcolor{keywordflow}{break};}
-\DoxyCodeLine{233       \}}
-\DoxyCodeLine{234     \}}
-\DoxyCodeLine{235   \}}
-\DoxyCodeLine{236 }
-\DoxyCodeLine{237   free(physicalDevices);}
-\DoxyCodeLine{238 }
-\DoxyCodeLine{239   \textcolor{keywordflow}{return} PDBR;}
-\DoxyCodeLine{240 \}}
-
-\end{DoxyCode}
 \mbox{\Hypertarget{VkCSetup_8h_a893da7ca96d8a883c77a46c6aa803451}\label{VkCSetup_8h_a893da7ca96d8a883c77a46c6aa803451}} 
 \index{VkCSetup.h@{VkCSetup.h}!VkCS\_DestroyDebugUtilsMessengerEXT@{VkCS\_DestroyDebugUtilsMessengerEXT}}
 \index{VkCS\_DestroyDebugUtilsMessengerEXT@{VkCS\_DestroyDebugUtilsMessengerEXT}!VkCSetup.h@{VkCSetup.h}}

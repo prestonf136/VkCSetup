@@ -3,14 +3,17 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vulkan/vulkan.h>
 
+#define VKCS_VERBOSE
+
 #ifdef VKCS_VERBOSE
-#define LOG(x) printf(x);
+#define VkCS_LOG(x) printf(x);
 #else
-#define LOG(x) ;
+#define VkCS_LOG(x) ;
 #endif
 
 //! if valdiation layers are enabled you must destroy the
@@ -55,24 +58,54 @@ struct InstanceBuilderReturn {
   VkDebugUtilsMessengerEXT DebugMessenger; //!< a debug messenger
 } typedef InstanceBuilderReturn;
 
-InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder);
+//! builds the physical instance
+InstanceBuilderReturn VkCS_BuildInstance(InstanceBuilder *Builder);
 
 /*! specifies the requirements a physical device should
  * meet to be selected*/
 struct PhysicalDeviceBuilder {
-  VkInstance *Instance;
+  VkSurfaceKHR *Surface; //! A pointer to a surface
+  VkInstance *Instance;  //! A vulkan instnace
   bool (*isSuitableDevice)(
       VkPhysicalDevice *); //! callback to check if GPU is suitable, if set to
                            //! NULL VkCSetup will perfer a descrete gpu
 } typedef PhysicalDeviceBuilder;
 
+//! this struct holds the values returned by the VkC_BuildPhysicaldevice
+//! function
 struct PhysicalDeviceBuilderReturn {
-  VkPhysicalDevice PhysicalDevice;
-  uint32_t GraphicsQueueIndex;
-  uint32_t PresentQueueIndex;
+  VkPhysicalDevice PhysicalDevice; //! A VkPhysicalDevice
+  int GraphicsQueueIndex;          //! the index to the graphics queue
+  int PresentQueueIndex;           //! the index to the present queue
 } typedef PhysicalDeviceBuilderReturn;
 
+//! builds the physical device
 PhysicalDeviceBuilderReturn
-VkC_BuildPhysicalDevice(PhysicalDeviceBuilder Builder);
+VkCS_BuildPhysicalDevice(PhysicalDeviceBuilder *Builder);
+
+struct DeviceBuilder {
+  PhysicalDeviceBuilderReturn *PDBuilderReturn;
+  VkPhysicalDeviceFeatures *deviceFeatures;
+  int LayerCount;
+  const char *const *LayerNames;
+} typedef DeviceBuilder;
+
+struct DeviceBuilderReturn {
+  VkDevice Device;
+  VkQueue GraphicsQueue;
+  VkQueue PresentQueue;
+} typedef DeviceBuilderReturn;
+
+DeviceBuilderReturn VkCS_BuildLogicalDevice(DeviceBuilder *Builder);
+
+struct SwapChainBuilder {
+  DeviceBuilderReturn *DBR;
+} typedef SwapChainBuilder;
+
+struct SwapChainBuilderReturn {
+
+} typedef SwapChainBuilderReturn;
+
+SwapChainBuilderReturn VkCS_BuildSwapChain(SwapChainBuilder *Builder);
 
 #endif

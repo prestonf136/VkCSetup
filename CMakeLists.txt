@@ -15,5 +15,6 @@ add_library(
 target_include_directories(VkCSetupL PUBLIC "include/")
 target_link_libraries(VkCSetupL INTERFACE Vulkan::Vulkan VkCSetupL)
 
+add_subdirectory("tests/glfw")
 add_executable(Test "tests/test.c")
-target_link_libraries(Test VkCSetupL)
+target_link_libraries(Test VkCSetupL glfw)
