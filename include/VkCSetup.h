@@ -2,15 +2,23 @@
 #define _VK_C_SETUP_
 
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vulkan/vulkan.h>
 
 #ifdef VKCS_VERBOSE
-#define LOG(x) printf(x);
+#define VkCS_LOG(x) printf(x);
 #else
-#define LOG(x) ;
+#define VkCS_LOG(x) ;
 #endif
+
+//! if valdiation layers are enabled you must destroy the
+//! VkDebugUtilsMessengerEXT yourself
+void VkCS_DestroyDebugUtilsMessengerEXT(
+    VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
+    const VkAllocationCallbacks *pAllocator);
 
 //! this struct holds the parameters used by the VkC_BuildInstance function
 struct InstanceBuilder {
@@ -28,27 +36,78 @@ struct InstanceBuilder {
   const char *const
       *ExtentionNames; //!< contains the names of extentions to be used
 
-  bool EnableDebugMessager; /*!< whether or not to use the debug messager
-                               provided by VkCSetup, if enabled ExtentionNames
-                               must contain VK_EXT_DEBUG_UTILS_EXTENSION_NAME
-                               and LayerNames must contain
-                               VK_LAYER_KHRONOS_validation*/
+  VkBool32 (*DebugCallback)(
+      VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT,
+      const VkDebugUtilsMessengerCallbackDataEXT *,
+      void *); /*!< contains a debug callback function, when set to NULL
+                  VkCSetup will use its default Debug Messager */
+  bool EnableDebugMessager; /*!< whether or not to use the
+                            debug messager provided by
+                            VkCSetup, if enabled
+                            ExtentionNames must contain
+                            VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+                            and LayerNames must contain
+                            VK_LAYER_KHRONOS_validation*/
 } typedef InstanceBuilder;
 
 //! this struct holds the values returned by the VkC_BuildInstance function
 struct InstanceBuilderReturn {
-  VkInstance Instance; /*!< A vulkan Instance */
+  VkInstance Instance;                     /*!< A vulkan Instance */
+  VkDebugUtilsMessengerEXT DebugMessenger; //!< a debug messenger
 } typedef InstanceBuilderReturn;
 
-//! function to create a vulkan instance
-InstanceBuilderReturn VkC_BuildInstance(InstanceBuilder *Builder);
+//! builds the physical instance
+InstanceBuilderReturn VkCS_BuildInstance(InstanceBuilder *Builder);
 
-/*! [NOT WORKING AS OF NOW] specifies the requirements a physical device should
-  meet to be selected*/
+/*! specifies the requirements a physical device should
+ * meet to be selected*/
 struct PhysicalDeviceBuilder {
-  bool ShouldBeDedicated; //!< when set to true VkCSetup will only use physical
-                          //!< devices with the
-                          //!< VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU flag
+  VkSurfaceKHR *Surface; //! A pointer to a surface
+  VkInstance *Instance;  //! A vulkan instnace
+  bool (*isSuitableDevice)(
+      VkPhysicalDevice *); //! callback to check if GPU is suitable, if set to
+                           //! NULL VkCSetup will perfer a descrete gpu
 } typedef PhysicalDeviceBuilder;
+
+//! this struct holds the values returned by the VkC_BuildPhysicaldevice
+//! function
+struct PhysicalDeviceBuilderReturn {
+  VkPhysicalDevice PhysicalDevice; //! A VkPhysicalDevice
+  int GraphicsQueueIndex;          //! the index to the graphics queue
+  int PresentQueueIndex;           //! the index to the present queue
+} typedef PhysicalDeviceBuilderReturn;
+
+//! builds the physical device
+PhysicalDeviceBuilderReturn
+VkCS_BuildPhysicalDevice(PhysicalDeviceBuilder *Builder);
+
+struct DeviceBuilder {
+  PhysicalDeviceBuilderReturn *PDBuilderReturn;
+  VkPhysicalDeviceFeatures *deviceFeatures;
+  int LayerCount;
+  const char *const *LayerNames;
+} typedef DeviceBuilder;
+
+struct DeviceBuilderReturn {
+  VkDevice Device;
+  VkQueue GraphicsQueue;
+  VkQueue PresentQueue;
+} typedef DeviceBuilderReturn;
+
+DeviceBuilderReturn VkCS_BuildLogicalDevice(DeviceBuilder *Builder);
+
+struct SwapChainBuilder {
+  PhysicalDeviceBuilderReturn *PDBR;
+  VkDevice *Device;
+  int Width, Height;
+  VkSurfaceKHR *Surface;
+  VkSwapchainKHR OldSwapChain;
+} typedef SwapChainBuilder;
+
+struct SwapChainBuilderReturn {
+  VkSwapchainKHR SwapChain;
+} typedef SwapChainBuilderReturn;
+
+SwapChainBuilderReturn VkCS_BuildSwapChain(SwapChainBuilder *Builder);
 
 #endif
