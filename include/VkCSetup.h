@@ -8,8 +8,6 @@
 #include <string.h>
 #include <vulkan/vulkan.h>
 
-#define VKCS_VERBOSE
-
 #ifdef VKCS_VERBOSE
 #define VkCS_LOG(x) printf(x);
 #else
@@ -99,11 +97,15 @@ struct DeviceBuilderReturn {
 DeviceBuilderReturn VkCS_BuildLogicalDevice(DeviceBuilder *Builder);
 
 struct SwapChainBuilder {
-  DeviceBuilderReturn *DBR;
+  PhysicalDeviceBuilderReturn *PDBR;
+  VkDevice *Device;
+  int Width, Height;
+  VkSurfaceKHR *Surface;
+  VkSwapchainKHR OldSwapChain;
 } typedef SwapChainBuilder;
 
 struct SwapChainBuilderReturn {
-
+  VkSwapchainKHR SwapChain;
 } typedef SwapChainBuilderReturn;
 
 SwapChainBuilderReturn VkCS_BuildSwapChain(SwapChainBuilder *Builder);

@@ -84,11 +84,27 @@ int main() {
   DBB.LayerNames = validationLayers;
   DBB.PDBuilderReturn = &DBRP;
 
-  VkCS_BuildLogicalDevice(&DBB);
+  DeviceBuilderReturn DBR = VkCS_BuildLogicalDevice(&DBB);
+
+  SwapChainBuilder SCB;
+  SCB.PDBR = &DBRP;
+  SCB.Surface = &surface;
+  SCB.Device = &DBR.Device;
+  SCB.Height = 640;
+  SCB.Width = 480;
+  SCB.OldSwapChain = VK_NULL_HANDLE;
+
+  SwapChainBuilderReturn SCBR = VkCS_BuildSwapChain(&SCB);
 
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
   }
 
   VkCS_DestroyDebugUtilsMessengerEXT(IBR.Instance, IBR.DebugMessenger, NULL);
+  vkDestroySwapchainKHR(DBR.Device, SCBR.SwapChain, NULL);
+  vkDestroyDevice(DBR.Device, NULL);
+  vkDestroySurfaceKHR(IBR.Instance, surface, NULL);
+  vkDestroyInstance(IBR.Instance, NULL);
+  glfwDestroyWindow(window);
+  glfwTerminate();
 }

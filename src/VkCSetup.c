@@ -64,6 +64,11 @@ bool VkCS_isDeviceSuitable(VkPhysicalDevice *Device) {
          SwapChainSupport;
 };
 
+int VkCS_Clamp(int d, int min, int max) {
+  const int t = d < min ? min : d;
+  return t > max ? max : t;
+}
+
 /// function to create a vulkan instance
 InstanceBuilderReturn VkCS_BuildInstance(InstanceBuilder *Builder) {
   InstanceBuilderReturn IBR;
@@ -286,6 +291,8 @@ VkCS_BuildPhysicalDevice(PhysicalDeviceBuilder *Builder) {
     }
   }
 
+  free(queueFamilies);
+
   return PDBR;
 };
 
@@ -352,6 +359,128 @@ SwapChainBuilderReturn VkCS_BuildSwapChain(SwapChainBuilder *Builder) {
   VkSurfaceCapabilitiesKHR capabilities;
   VkSurfaceFormatKHR *formats = NULL;
   VkPresentModeKHR *presentModes = NULL;
+
+  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(Builder->PDBR->PhysicalDevice,
+                                            *Builder->Surface, &capabilities);
+
+  uint32_t formatCount;
+  vkGetPhysicalDeviceSurfaceFormatsKHR(Builder->PDBR->PhysicalDevice,
+                                       *Builder->Surface, &formatCount, NULL);
+
+  if (formatCount != 0) {
+    formats = malloc(formatCount * sizeof(VkSurfaceFormatKHR));
+    vkGetPhysicalDeviceSurfaceFormatsKHR(Builder->PDBR->PhysicalDevice,
+                                         *Builder->Surface, &formatCount,
+                                         formats);
+  }
+
+  uint32_t presentModeCount;
+  vkGetPhysicalDeviceSurfacePresentModesKHR(Builder->PDBR->PhysicalDevice,
+                                            *Builder->Surface,
+                                            &presentModeCount, NULL);
+
+  if (presentModeCount != 0) {
+    presentModes = malloc(presentModeCount * sizeof(VkPresentModeKHR));
+    vkGetPhysicalDeviceSurfacePresentModesKHR(Builder->PDBR->PhysicalDevice,
+                                              *Builder->Surface,
+                                              &presentModeCount, presentModes);
+  }
+
+  bool swapChainAdequate = formatCount != 0 && presentModeCount != 0;
+
+  if (!swapChainAdequate) {
+    VkCS_LOG("[VkCS Error]: Swapchain not adequate!");
+  }
+
+  bool FoundFormat = false;
+  VkSurfaceFormatKHR SelectedFormat;
+  for (int i = 0; i < formatCount; i++) {
+    if (formats[i].format == VK_FORMAT_B8G8R8A8_SRGB &&
+        formats[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+      SelectedFormat = formats[i];
+      FoundFormat = true;
+      break;
+    }
+  }
+
+  if (!FoundFormat) {
+    VkSurfaceFormatKHR SelectedFormat = formats[0];
+  }
+
+  bool FoundPresentMode = false;
+  VkPresentModeKHR SelectedPresentMode;
+  for (int i = 0; i < presentModeCount; i++) {
+    if (presentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR) {
+      SelectedPresentMode = presentModes[i];
+      FoundPresentMode = true;
+      break;
+    }
+  }
+
+  if (!FoundPresentMode) {
+    SelectedPresentMode = VK_PRESENT_MODE_FIFO_KHR;
+  };
+
+  VkExtent2D SwapExtent;
+
+  if (capabilities.currentExtent.width != UINT32_MAX) {
+    SwapExtent = capabilities.currentExtent;
+  } else {
+
+    VkExtent2D actualExtent = {(uint32_t)Builder->Width,
+                               (uint32_t)Builder->Height};
+
+    actualExtent.width =
+        VkCS_Clamp(actualExtent.width, capabilities.minImageExtent.width,
+                   capabilities.maxImageExtent.width);
+    actualExtent.height =
+        VkCS_Clamp(actualExtent.height, capabilities.minImageExtent.height,
+                   capabilities.maxImageExtent.height);
+
+    SwapExtent = actualExtent;
+  }
+
+  uint32_t imageCount = capabilities.minImageCount + 1;
+  if (capabilities.maxImageCount > 0 &&
+      imageCount > capabilities.maxImageCount) {
+    imageCount = capabilities.maxImageCount;
+  }
+
+  VkSwapchainCreateInfoKHR SwapChainCreateInfo = {};
+  SwapChainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+  SwapChainCreateInfo.surface = *Builder->Surface;
+  SwapChainCreateInfo.minImageCount = imageCount;
+  SwapChainCreateInfo.imageFormat = SelectedFormat.format;
+  SwapChainCreateInfo.imageColorSpace = SelectedFormat.colorSpace;
+  SwapChainCreateInfo.imageExtent = SwapExtent;
+  SwapChainCreateInfo.imageArrayLayers = 1;
+  SwapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+  uint32_t queueFamilyIndices[] = {Builder->PDBR->GraphicsQueueIndex,
+                                   Builder->PDBR->PresentQueueIndex};
+
+  if (Builder->PDBR->GraphicsQueueIndex != Builder->PDBR->PresentQueueIndex) {
+    SwapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+    SwapChainCreateInfo.queueFamilyIndexCount = 2;
+    SwapChainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
+  } else {
+    SwapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    SwapChainCreateInfo.queueFamilyIndexCount = 0;
+    SwapChainCreateInfo.pQueueFamilyIndices = NULL;
+  }
+  SwapChainCreateInfo.preTransform = capabilities.currentTransform;
+  SwapChainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+  SwapChainCreateInfo.presentMode = SelectedPresentMode;
+  SwapChainCreateInfo.clipped = VK_TRUE;
+  SwapChainCreateInfo.oldSwapchain = Builder->OldSwapChain;
+
+  if (vkCreateSwapchainKHR(*Builder->Device, &SwapChainCreateInfo, NULL,
+                           &SCBR.SwapChain) != VK_SUCCESS) {
+    VkCS_LOG("[VkCS Error]: failed to create swap chain!");
+  }
+
+  free(formats);
+  free(presentModes);
 
   return SCBR;
 };
